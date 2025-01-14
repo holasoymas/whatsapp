@@ -1,21 +1,11 @@
 import jwt from "jsonwebtoken";
-import Config from "./config.js";
-
-export const getTokenFrom = (request) => {
-  const authorization = request.get("authorization");
-  if (authorization && authorization.startsWith("Bearer ")) {
-    return authorization.replace("Bearer ", "");
-  }
-  return null;
-};
+import Config, { JWT_AGE } from "./config.js";
 
 export function createToken(userData) {
-  const token = jwt.sign(userData, Config.JWT, { expiresIn: "5d" });
+  const token = jwt.sign(userData, Config.JWT, { expiresIn: JWT_AGE });
   return token;
 }
 
 export function decodeToken(token) {
-  const userData = jwt.decode(token, Config.JWT);
-  if (!userData) return null;
-  return userData;
+  return jwt.verify(token, Config.JWT);
 }
