@@ -1,6 +1,6 @@
 const Config = { BASE_API_URL: "http://localhost:8000" };
 
-export async function fetchFromServer(endpoint, method, body = null, authToken = null) {
+export async function fetchFromServer(endpoint, method, body = null) {
   try {
     const response = await fetch(
       `${Config.BASE_API_URL}/${endpoint}`,
@@ -15,14 +15,14 @@ export async function fetchFromServer(endpoint, method, body = null, authToken =
     }
     const result = await response.json();
     console.log(result);
-    return { status: 200, result };
+    return { status: response.status, result };
   } catch (error) {
     // console.error("Fetch error:", error);
     throw error;
   }
 }
 
-function buildOptions(method, body, authToken) {
+function buildOptions(method, body) {
   const options = {};
 
   options.method = method;
@@ -33,7 +33,6 @@ function buildOptions(method, body, authToken) {
 
   options.headers = {
     "Content-Type": "application/json; charset=UTF-8",
-    Authorization: `Bearer ${authToken}`,
   };
 
   return options;
