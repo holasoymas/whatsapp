@@ -2,10 +2,7 @@ const Config = { BASE_API_URL: "http://localhost:8000" };
 
 export async function fetchFromServer(endpoint, method, body = null) {
   try {
-    const response = await fetch(
-      `${Config.BASE_API_URL}/${endpoint}`,
-      buildOptions(method, body, authToken),
-    );
+    const response = await fetch(`${Config.BASE_API_URL}/${endpoint}`, buildOptions(method, body));
 
     if (!response.ok) {
       const errorData = await response.json();
