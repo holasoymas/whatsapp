@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer";
-import Config from "../../utils/config.js";
-import { generateRand } from "../../utils/rand.js";
+import Config from "../utils/config.js";
 
 function generateHtml(verificationCode) {
   return ` <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; border: 1px solid #ddd;">
@@ -34,15 +33,10 @@ function genEmailMetaData(email, verificationCode) {
   };
 }
 
-export async function sendEmail(email) {
+export async function sendEmail(email, rand) {
   try {
-    const rand = generateRand(3);
     const emailMetaData = genEmailMetaData(email, rand);
-    const info = await transporter.sendMail(emailMetaData);
-    console.log(info);
-    if (info.accepted.includes(email)) {
-      console.log(`Rand email send`);
-    }
+    await transporter.sendMail(emailMetaData);
   } catch (err) {
     throw err;
   }
