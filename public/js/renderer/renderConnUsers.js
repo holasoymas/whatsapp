@@ -1,3 +1,5 @@
+import { omitEmail } from "../utils/omitEmail.js";
+
 export function renderConnUsers(selector, users) {
   const $container = document.querySelector(selector);
   $container.innerHTML = "";
@@ -11,9 +13,10 @@ export function renderConnUser($container, user) {
 
 function renderConnUserItem(user) {
   const { connectedUserId, connectedUserEmail, chatId } = user;
+  const email = omitEmail(connectedUserEmail);
   return `
-    <div class="contact" data-uid="${connectedUserId}" data-email="${connectedUserEmail}" data-chat-id="${chatId}">
-      ${connectedUserEmail}
+    <div class="contact" data-user-id="${connectedUserId}" data-email="${connectedUserEmail}" data-chat-id="${chatId}">
+      ${email}
     </div>
   `;
 }
