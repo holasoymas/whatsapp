@@ -9,7 +9,7 @@ export async function fetchMessagesByChatId(chatId, lastMessageId = null) {
     return await prisma.message.findMany({
       where: { chatId: chatId },
       orderBy: { createdAt: "asc" },
-      take: 10,
+      take: -10, // fetch the last 10 messages
       ...(lastMessageId && { cursor: { id: lastMessageId }, skip: 1 }), // Skip the cursor message and fetch the next batch
     });
   } catch (error) {
