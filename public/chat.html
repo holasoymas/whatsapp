@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WhatsApp Clone - Chat</title>
+    <link rel="stylesheet" href="/styles/common.css" />
+    <link rel="stylesheet" href="/styles/chat.css" />
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" src="/js/pages/chat.js"></script>
+    <script type="module" src="/js/pages/sendMessage.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="chat-container">
+        <div class="chat-sidebar">
+          <div class="searchbar">
+            <input type="text" name="searchbar" value="" />
+          </div>
+          <hr />
+          <br /><br />
+          <div id="chat-list">
+            <!-- Dynamically load the users here  -->
+            <div class="contact" data-user-id="" data-email="" data-chat-id=""></div>
+          </div>
+        </div>
+        <div class="initial-render">
+          <h1 style="text-align: center">Welcome to our chat app</h1>
+        </div>
+        <div class="chat-main" style="display: none">
+          <div class="chat-header">
+            <h3 id="currentChat" data-user-id="" data-email="" data-chat-id=""></h3>
+          </div>
+          <div class="chat-messages" id="messageContainer">
+            <!-- Dynamically render messages -->
+            <div data-msg-id class="message received">
+              <p><strong>John Doe:</strong> Hey! How are you?</p>
+            </div>
+            <div data-msg-id="" class="message sent">
+              <p><strong>You:</strong> I'm good, thanks! How about you?</p>
+            </div>
+          </div>
+          <div class="chat-input">
+            <button class="call-btn" id="videoCallBtn" title="Video Call">🎥</button>
+            <button class="call-btn" id="voiceCallBtn" title="Voice Call">🎤</button>
+            <input type="file" id="fileInput" style="display: none" />
+            <!-- <label for="fileInput" class="file-label" title="Attach File">📎</label> -->
+            <input type="text" id="messageInput" placeholder="Type a message" />
+            <button class="btn send-btn">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
