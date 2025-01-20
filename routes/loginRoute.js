@@ -5,36 +5,31 @@ import session from "express-session";
 import { generateRand } from "../utils/rand.js";
 import { sendEmail } from "../config/email.js";
 import { createToken } from "../utils/jwt.js";
-
+import { findOrCreateUser } from "../models/userModel.js";
+import Config, { COOKIE_META_DATA, SESSION_AGE, SESSION_META_DATA } from "../utils/config.js";
 const __dirname = path.resolve();
 
-const SESSION_AGE = 2 * 60 * 1000; // 2 min
-
-const sessionMetaData = {
-  secret: "mysecret_session",
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    httpOnly: true,
-    secure: false, // do true for https
-    sameSite: "strict",
-    maxAge: SESSION_AGE,
-  },
-};
-
-const sessionMiddleware = session(sessionMetaData);
+const sessionMiddleware = session(SESSION_META_DATA);
 
 loginRoute.get("", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 loginRoute.post("", sessionMiddleware, async (req, res) => {
-  const { email } = req.body;
-  req.session.email = email.trim();
+  const email = req.body.email.trim();
+  if (!email) {
+    res.status(400).json({ error: "Plz enter an email " });
+  }
+  req.session.email = email;
   req.session.otp = generateRand(3);
   req.session.expiredAt = Date.now() + SESSION_AGE;
-  await sendEmail(req.session.email, req.session.otp);
-  res.redirect(302, "/login/verify");
+  try {
+    await sendEmail(req.session.email, req.session.otp);
+  } catch (err) {
+    return res.status(500).json({ error: err });
+  }
+  // res.redirect(302, "/login/verify");
+  res.status(200).json({ redirectedUrl: `${Config.BASE_API_URL}/login/verify` });
 });
 
 loginRoute.get("/verify", sessionMiddleware, (req, res) => {
@@ -46,7 +41,7 @@ loginRoute.get("/verify", sessionMiddleware, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "verification.html"));
 });
 
-loginRoute.post("/verify", sessionMiddleware, (req, res) => {
+loginRoute.post("/verify", sessionMiddleware, async (req, res) => {
   const userOtp = req.body.otp;
   const { email, otp, expiredAt } = req.session;
   console.log(email, otp, expiredAt);
@@ -58,11 +53,21 @@ loginRoute.post("/verify", sessionMiddleware, (req, res) => {
   if (userOtp != otp) {
     return res.status(401).send({ error: "Invalid OTP" });
   }
-  const userData = {
-    email,
-  };
-  const token = createToken(userData);
-  res.status(200).send({ token, redirectedUrl: "/chat" });
+
+  try {
+    const user = await findOrCreateUser(email);
+    const jwtData = {
+      id: user.id,
+      email: user.email,
+    };
+    const token = createToken(jwtData);
+    // store the token in the cookie
+    res.cookie("authToken", token, COOKIE_META_DATA);
+    res.status(201).json({ token, redirectedUrl: `${Config.BASE_API_URL}/chat` });
+  } catch (err) {
+    res.status(500).json({ error: err });
+    Logger.error("error in db", err);
+  }
 });
 
 export { loginRoute };
