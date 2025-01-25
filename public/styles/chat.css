@@ -8,7 +8,7 @@
 }
 
 .chat-sidebar {
-  width: 300px;
+  width: 20vw;
   background: #fff;
   border-right: 1px solid #ddd;
   height: 100%;
@@ -28,14 +28,51 @@
   border-bottom: 1px solid #ddd;
 }
 
+/* Search bar */
+.search-bar {
+  position: relative;
+  padding: 0.5rem;
+}
+.search-bar input {
+  width: 100%;
+  padding: 0.5rem;
+}
+
+.suggestions-box {
+  position: absolute;
+  width: 100%;
+  top: 40px;
+  left: 0;
+  border: 1px solid #ccc;
+  background: white;
+  display: none;
+  max-height: 150px;
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.suggestion-item {
+  padding: 10px;
+  color: #000;
+  cursor: pointer;
+}
+
+.suggestion-item:hover {
+  background-color: #f0f0f0;
+}
+/* Suggession close */
+
 .chat-messages {
   flex: 1;
+  height: 85%;
+  /* min-height: 80vh; */
   padding: 20px;
   overflow-y: auto;
   background: #e5ddd5;
 }
 
 .chat-input {
+  position: sticky;
   padding: 10px;
   background: #f0f2f5;
   border-top: 1px solid #ddd;
@@ -50,7 +87,7 @@
   border-radius: 8px;
   margin-right: 10px;
   font-size: 14px;
-  max-width: 80%; /* Increase input width */
+  max-width: 100%; /* Increase input width */
 }
 
 .call-btn {
