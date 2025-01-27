@@ -81,3 +81,11 @@ SECRET_SESSION=YOUR_SECRET_SESSION
 
 DATABASE_URL="postgresql://<user-name>:<user-password>@localhost:5432/whatsapp?schema=public"
 ```
+
+### 4. Run Prisma migrations
+
+Run Prisma to generate the necessary tables and schema in the database:
+
+```bash
+pnpm prisma migrate dev
+```
