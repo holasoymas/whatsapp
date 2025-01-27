@@ -1,3 +1,6 @@
+import { renderInitToMsgArea } from "../renderer/renderInitToMsgArea.js";
+import { renderMessages } from "../renderer/renderMessages.js";
+import { renderChatHeader } from "../renderer/renderMsgArea.js";
 import { fetchFromServer } from "../utils/fetcher.js";
 import { omitEmail } from "../utils/omitEmail.js";
 
@@ -42,9 +45,26 @@ export function renderSuggestions(suggestions) {
     suggestionItem.addEventListener("click", () => {
       //FIX: create connection if not exist , and redirect to the chats
       //make api request
+      fetchFromServer("chat/createOrGetConnection", "POST", { id: user.id })
+        .then((res) => {
+          const connectionInfo = res.result.connection;
+          const chatId = connectionInfo.id;
+          // console.log(connectionInfo);
+          renderInitToMsgArea();
+          renderChatHeader(user.id, user.email, chatId);
+          fetchFromServer(`chat/getMessages/${chatId}`, "GET")
+            .then((res) => {
+              renderMessages(".chat-messages", res.result.messagesArray);
+            })
+            .catch(
+              () =>
+                (document.querySelector(".chat-messages").innerText = "Couldnt render messages"),
+            );
+          // console.log(res.result);
+        })
+        .catch((err) => console.error("Error while creating connection", err));
       // renderInitToMsgArea();
       // renderChatHeader();
-      searchInput.value = user.email;
       suggestionsBox.style.display = "none";
     });
 
