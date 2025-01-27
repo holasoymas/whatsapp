@@ -7,9 +7,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "chat-app",
+    "socket.io",
+    "real-time-app"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@prisma/client": "^6.2.1",
     "cookie-parser": "^1.4.7",
