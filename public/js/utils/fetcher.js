@@ -11,7 +11,7 @@ export async function fetchFromServer(endpoint, method, body = null) {
       return { status: resStatus, error: errorData };
     }
     const result = await response.json();
-    console.log(result);
+    // console.log(result);
     return { status: response.status, result };
   } catch (error) {
     // console.error("Fetch error:", error);
