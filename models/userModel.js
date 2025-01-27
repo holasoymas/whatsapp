@@ -40,3 +40,12 @@ export async function getUsersByIds(ids) {
   });
   return users;
 }
+
+// for searching user
+export async function findUserContains(email) {
+  return await prisma.user.findMany({
+    where: {
+      email: { contains: email, mode: "insensitive" },
+    },
+  });
+}
