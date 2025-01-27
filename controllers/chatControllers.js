@@ -1,7 +1,8 @@
 import path from "path";
 import { decodeToken } from "../utils/jwt.js";
-import { findUserChats } from "../models/connModel.js";
+import { findOrCreateChat, findUserChats } from "../models/connModel.js";
 import * as PrismaMessage from "../models/chatModel.js";
+import { findUserContains } from "../models/userModel.js";
 
 const __dirname = path.resolve();
 
@@ -30,6 +31,30 @@ export const getChats = async (req, res, next) => {
     // get who he messages to (connected users)
     const connectedUsers = await findUserChats(userData.id);
     res.status(200).json({ connectedUsers });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// searching user on searchbar
+export const getUsersContains = async (req, res, next) => {
+  try {
+    const userEmail = req.query.userEmail;
+    const users = await findUserContains(userEmail);
+    res.status(200).json({ users });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const createOrGetConnection = async (req, res, next) => {
+  try {
+    const userId = req.body.id;
+
+    const currUserToken = req.cookies.authToken;
+    const decodedUser = decodeToken(currUserToken);
+    const connection = await findOrCreateChat(userId, decodedUser.id);
+    res.status(200).json({ connection });
   } catch (err) {
     next(err);
   }
